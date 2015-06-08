@@ -100,7 +100,7 @@ class FedexBaseService(object):
             self.logger.info("Using production server.")
             self.wsdl_path = os.path.join(config_obj.wsdl_path, wsdl_name)
 
-        self.client = Client('file:///%s' % self.wsdl_path.lstrip('/'))
+        self.client = Client('file:///%s' % self.wsdl_path.lstrip('/'), plugins=kwargs.get('plugins', []))
 
         self.VersionId = None
         """@ivar: Holds details on the version numbers of the WSDL."""

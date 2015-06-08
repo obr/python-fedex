@@ -31,7 +31,7 @@ class FedexProcessShipmentRequest(FedexBaseService):
         # Holds version info for the VersionId SOAP object.
         self._version_info = {
             'service_id': 'ship',
-            'major': '13',
+            'major': '15',
             'intermediate': '0',
             'minor': '0'
         }
@@ -39,7 +39,7 @@ class FedexProcessShipmentRequest(FedexBaseService):
         """@ivar: Holds the RequestedShipment WSDL object."""
         # Call the parent FedexBaseService class for basic setup work.
         super(FedexProcessShipmentRequest, self).__init__(
-            self._config_obj, 'ShipService_v13.wsdl', *args, **kwargs)
+            self._config_obj, 'ShipService_v15.wsdl', *args, **kwargs)
         
     def _prepare_wsdl_objects(self):
         """
