@@ -6,12 +6,14 @@ common may be found here.
 In particular, the L{FedexBaseService} class handles most of the basic,
 repetitive setup work that most requests do.
 """
+from operator import attrgetter
 
 import os
 import logging
 
 import suds
 from suds.client import Client
+import ipdb
 
 
 class FedexBaseServiceException(Exception):
@@ -206,10 +208,13 @@ class FedexBaseService(object):
         """
 
         if self.response.HighestSeverity == "ERROR":
+            codes = []
+            messages = []
             for notification in self.response.Notifications:
                 if notification.Severity == "ERROR":
-                    raise FedexError(notification.Code,
-                                     notification.Message)
+                    codes.append(notification.Code)
+                    messages.append(notification.Message)
+            raise FedexError(codes, messages)
 
     def create_wsdl_object_of_type(self, type_name):
         """
@@ -242,6 +247,12 @@ class FedexBaseService(object):
             # When this happens, throw an informative message reminding the
             # user to check all required variables, making sure they are
             # populated and valid
+            # FIXME: Enhance
+            z = attrgetter('fault.detail.fault.details')
+            if z(fault):
+                details = z(fault)
+                # ipdb.set_trace()
+                raise FedexBaseServiceException(value=details, error_code=None)
             raise SchemaValidationError(fault.fault)
 
         # Check the response for general Fedex errors/failures that aren't
