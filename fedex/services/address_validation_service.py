@@ -8,7 +8,8 @@ documentation.
 """
 
 from datetime import datetime
-from .. base_service import FedexBaseService
+
+from ..base_service import FedexBaseService
 
 
 class FedexAddressValidationRequest(FedexBaseService):
@@ -32,7 +33,7 @@ class FedexAddressValidationRequest(FedexBaseService):
             'intermediate': '0',
             'minor': '0'
         }
-        
+
         self.AddressValidationOptions = None
         """@ivar: Holds the AddressValidationOptions WSDL object."""
         self.addresses_to_validate = []
@@ -40,7 +41,7 @@ class FedexAddressValidationRequest(FedexBaseService):
         # Call the parent FedexBaseService class for basic setup work.
         super(FedexAddressValidationRequest, self).__init__(
             self._config_obj, 'AddressValidationService_v3.wsdl', *args, **kwargs)
-        
+
     def _prepare_wsdl_objects(self):
         """
         Create the data structure and get it ready for the WSDL request.
@@ -48,11 +49,11 @@ class FedexAddressValidationRequest(FedexBaseService):
 
         # This holds some optional options for the request..
         self.AddressValidationOptions = self.client.factory.create('AddressValidationOptions')
-                               
+
         # This is good to review if you'd like to see what the data structure
         # looks like.
         self.logger.debug(self.AddressValidationOptions)
-    
+
     def _assemble_and_send_request(self):
         """
         Fires off the Fedex request.
@@ -69,15 +70,20 @@ class FedexAddressValidationRequest(FedexBaseService):
         self.logger.debug(self.ClientDetail)
         self.logger.debug(self.TransactionDetail)
         self.logger.debug(self.VersionId)
-        # Fire off the query.
-        return self.client.service.addressValidation(
+
+        kwargs = dict(
             WebAuthenticationDetail=self.WebAuthenticationDetail,
             ClientDetail=self.ClientDetail,
             TransactionDetail=self.TransactionDetail,
             Version=self.VersionId,
             RequestTimestamp=datetime.now(),
-            Options=self.AddressValidationOptions,
-            AddressesToValidate=self.addresses_to_validate)
+            AddressesToValidate=self.addresses_to_validate
+        )
+        if self._version_info['major'] < '3':
+            kwargs['Options'] = self.AddressValidationOptions
+
+        # Fire off the query.
+        return self.client.service.addressValidation(**kwargs)
 
     def add_address(self, address_item):
         """
