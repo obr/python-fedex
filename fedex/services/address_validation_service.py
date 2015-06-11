@@ -28,7 +28,7 @@ class FedexAddressValidationRequest(FedexBaseService):
         # Holds version info for the VersionId SOAP object.
         self._version_info = {
             'service_id': 'aval',
-            'major': '2',
+            'major': '3',
             'intermediate': '0',
             'minor': '0'
         }
@@ -39,7 +39,7 @@ class FedexAddressValidationRequest(FedexBaseService):
         """@ivar: Holds the AddressToValidate WSDL object."""
         # Call the parent FedexBaseService class for basic setup work.
         super(FedexAddressValidationRequest, self).__init__(
-            self._config_obj, 'AddressValidationService_v2.wsdl', *args, **kwargs)
+            self._config_obj, 'AddressValidationService_v3.wsdl', *args, **kwargs)
         
     def _prepare_wsdl_objects(self):
         """
