@@ -77,12 +77,12 @@ class FedexAddressValidationRequest(FedexBaseService):
             ClientDetail=self.ClientDetail,
             TransactionDetail=self.TransactionDetail,
             Version=self.VersionId,
-            RequestTimestamp=datetime.now(),
             AddressesToValidate=self.addresses_to_validate
         )
 
         if self._version_info['major'] < '3':
             kwargs['Options'] = self.AddressValidationOptions
+            kwargs['RequestTimestamp'] = datetime.now()
 
         # Fire off the query.
         return self.client.service.addressValidation(**kwargs)
