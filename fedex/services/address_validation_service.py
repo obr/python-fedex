@@ -47,8 +47,9 @@ class FedexAddressValidationRequest(FedexBaseService):
         Create the data structure and get it ready for the WSDL request.
         """
 
-        # This holds some optional options for the request..
-        self.AddressValidationOptions = self.client.factory.create('AddressValidationOptions')
+        if self._version_info['major'] < '3':
+            # This holds some optional options for the request..
+            self.AddressValidationOptions = self.client.factory.create('AddressValidationOptions')
 
         # This is good to review if you'd like to see what the data structure
         # looks like.
@@ -79,6 +80,7 @@ class FedexAddressValidationRequest(FedexBaseService):
             RequestTimestamp=datetime.now(),
             AddressesToValidate=self.addresses_to_validate
         )
+
         if self._version_info['major'] < '3':
             kwargs['Options'] = self.AddressValidationOptions
 
