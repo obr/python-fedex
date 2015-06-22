@@ -155,7 +155,7 @@ class FedexProcessShipmentRequest(FedexBaseService):
 
         self.RequestedShipment.RequestedPackageLineItems.append(package_item)
         package_weight = package_item.Weight.Value
-        self.RequestedShipment.TotalWeight.Value += package_weight
+        self.RequestedShipment.TotalWeight.Value += float(package_weight)  # Float to handle Decimal input
         self.RequestedShipment.PackageCount += 1
 
 

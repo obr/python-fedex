@@ -9,3 +9,5 @@ dist
 build
 .idea
 .DS_Store
+
+tests/test_settings.py
