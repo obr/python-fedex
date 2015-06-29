@@ -49,6 +49,17 @@ class FedexError(FedexBaseServiceException):
 
     pass
 
+class FedexMultiError(FedexError):
+    """
+    Exception: These are generally problems with the client-provided data.
+    """
+    def __init__(self, fedex_errors):
+        self.fedex_errors = fedex_errors
+
+    def __str__(self):
+        return "\n".join(map(self.fedex_errors, lambda fe: "{fe.error_code}: {fe.value}".format(fe)))
+
+
 
 class SchemaValidationError(FedexBaseServiceException):
     """
@@ -208,13 +219,19 @@ class FedexBaseService(object):
         """
 
         if self.response.HighestSeverity == "ERROR":
-            codes = []
-            messages = []
+            fedex_errors = []
+
             for notification in self.response.Notifications:
                 if notification.Severity == "ERROR":
-                    codes.append(notification.Code)
-                    messages.append(notification.Message)
-            raise FedexError(codes, messages)
+                    fedex_errors.append(FedexError(notification.Code, notification.Message))
+
+            assert len(fedex_errors) > 0, \
+                "HighestSeverity ERROR is expected to result in error: {}".fomrat(self.response.Notifications)
+
+            if len(fedex_errors) == 1:
+                raise fedex_errors[0]
+            else:
+                raise FedexMultiError(fedex_errors)
 
     def create_wsdl_object_of_type(self, type_name):
         """
