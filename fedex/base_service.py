@@ -56,7 +56,7 @@ class FedexMultiError(FedexError):
     def __init__(self, fedex_errors):
         self.fedex_errors = fedex_errors
 
-    def __str__(self):
+    def __unicode__(self):
         return "\n".join(map(self.fedex_errors, lambda fe: "{fe.error_code}: {fe.value}".format(fe)))
 
 
