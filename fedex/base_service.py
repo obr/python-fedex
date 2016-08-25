@@ -13,7 +13,6 @@ import logging
 
 import suds
 from suds.client import Client
-import ipdb
 
 
 class FedexBaseServiceException(Exception):
@@ -268,7 +267,6 @@ class FedexBaseService(object):
             z = attrgetter('fault.detail.fault.details')
             if z(fault):
                 details = z(fault)
-                # ipdb.set_trace()
                 raise FedexBaseServiceException(value=details, error_code=None)
             raise SchemaValidationError(fault.fault)
 
