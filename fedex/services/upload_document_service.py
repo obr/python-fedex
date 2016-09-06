@@ -94,11 +94,12 @@ class FedexUploadDocumentRequest(FedexBaseService):
 
         with open(file_path, "rb") as document_file:
             encoded_document_data = base64.b64encode(document_file.read())
+            encoded_document_data_str = bytes.decode(encoded_document_data)
             document = self.create_wsdl_object_of_type("UploadDocumentDetail")
 
             document.DocumentType = document_type
             document.FileName = file_name or os.path.basename(file_path)
             if reference_message:
                 document.CustomerReference = reference_message
-            document.DocumentContent = encoded_document_data
+            document.DocumentContent = encoded_document_data_str
             self.Documents.append(document)
