@@ -264,11 +264,12 @@ class FedexBaseService(object):
             # user to check all required variables, making sure they are
             # populated and valid
             # FIXME: Enhance
-            z = attrgetter('fault.detail.fault.details')
-            if z(fault):
-                details = z(fault)
+            try:
+                detailsgetter = attrgetter('fault.detail.fault.details')  # happy path
+                details = detailsgetter(fault)
                 raise FedexBaseServiceException(value=details, error_code=None)
-            raise SchemaValidationError(fault.fault)
+            except AttributeError:
+                raise SchemaValidationError(fault.fault)
 
         # Check the response for general Fedex errors/failures that aren't
         # specific to any given WSDL/request.
